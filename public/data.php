@@ -1,7 +1,11 @@
 <?php
 
-session_start();
+use App\Foursquare\Venue;
+use App\Foursquare\VenueOrdering;
+
+header('Content-Type: application/json');
 date_default_timezone_set('Europe/Budapest');
+
 include 'config.php';
 include '../vendor/autoload.php';
 
@@ -18,22 +22,6 @@ $auth = $factory->getAuthenticationGateway(
 	REDIRECT_URL
 );
 
-/*
-if (!isset($_SESSION['fsqr_token'])) {
-	if ($code = $_GET['code']) {
-		$token = $auth->authenticateUser($code);
-		$_SESSION['fsqr_token'] = $token;
-	} else {
-		$auth->initiateLogin();
-		exit;
-	}
-} else {
-	$token = $_SESSION['fsqr_token'];
-}
-
-$factory->setToken($token);
-*/
-
 $venueList = array();
 foreach ($foodLists as $foodType => $foodCategory) {
     $gateway = $factory->getListGateway($foodCategory);
@@ -45,7 +33,9 @@ foreach ($foodLists as $foodType => $foodCategory) {
 	}
 }
 
-var_dump($venueList);
+usort($venueList, VenueOrdering::create()->ordering());
+
+echo json_encode($venueList);
 
 /*
 object(stdClass)#137 (6) {
