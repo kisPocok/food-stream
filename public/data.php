@@ -3,7 +3,6 @@
 session_start();
 date_default_timezone_set('Europe/Budapest');
 include 'config.php';
-//include 'Venue.php';
 include '../vendor/autoload.php';
 
 $client = new \TheTwelve\Foursquare\HttpClient\CurlHttpClient('../cacert.pem');
@@ -19,6 +18,7 @@ $auth = $factory->getAuthenticationGateway(
 	REDIRECT_URL
 );
 
+/*
 if (!isset($_SESSION['fsqr_token'])) {
 	if ($code = $_GET['code']) {
 		$token = $auth->authenticateUser($code);
@@ -32,6 +32,7 @@ if (!isset($_SESSION['fsqr_token'])) {
 }
 
 $factory->setToken($token);
+*/
 
 $venueList = array();
 foreach ($foodLists as $foodType => $foodCategory) {
