@@ -7,7 +7,7 @@ class Venue
 	/**
 	 * @var string
 	 */
-	public $id;
+	private $id;
 
 	/**
 	 * @var string
@@ -88,7 +88,7 @@ class Venue
 		$venue->tipCount      = (int) $item->venue->stats->tipCount;
 		$venue->categories    = (array) $item->venue->categories;
 		$venue->location      = $item->venue->location;
-		$venue->photoUrl      = $item->photo->prefix . "/%dx%d/" . $item->photo->suffix;
+		$venue->photoUrl      = $item->photo->prefix . "%dx%d" . $item->photo->suffix;
 		return $venue;
 	}
 
