@@ -28,7 +28,9 @@ foreach ($foodLists as $foodType => $foodCategory) {
 	$list = $gateway->getList();
 	if (isset($list->listItems) && $list->listItems->count > 0) {
 		foreach ($list->listItems->items as $item) {
-			$venueList[] = \App\Foursquare\Venue::create($item);
+			$v = Venue::create($item);
+            $v->previewUrl = $v->getPhotoUrl(70, 50);
+            $venueList[$item->id] = $v;
 		}
 	}
 }

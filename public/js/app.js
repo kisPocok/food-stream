@@ -34,12 +34,44 @@ var miakaja = (function(window, $)
 
 		map = initializeMap();
 		streetView = initializeStreetView(map);
+        initializePlaces();
 
 		// ustream
 		marker.create(map, getDefaultLocation(), icons.office(), 'Ustream');
 
 		return self;
 	};
+
+    var initializePlaces = function()
+    {
+        $.getJSON('data.php', function(data) {
+            console.log(data);
+            $.each(data, function(i, venue) {
+                $('#places').append(createPlace(venue));
+                marker.create(
+                    map,
+                    new google.maps.LatLng(venue.location.lat, venue.location.lng),
+                    icons.restaurant(),
+                    venue.name
+                );
+            });
+        });
+    };
+
+    /**
+     * @param venue
+     */
+    var createPlace = function(venue)
+    {
+        var guest = venue.hereNow > 0 ? ' <span class="glyphicon glyphicon-user"></span> ' + venue.hereNow : '';
+        var txt = '<a href="#" class="list-group-item">' +
+            '<img src="' + venue.previewUrl + '" class="list-group-item-img" />' +
+            '<h4 class="list-group-item-heading">' + venue.name + '</h4>' +
+            '<p class="list-group-item-text">' + venue.location.address + guest + '</p>' +
+        '</a>';
+
+        return $(txt);
+    }
 
 	/**
 	 * @returns {google.maps.Map}

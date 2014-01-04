@@ -10,13 +10,50 @@ html, body {
 }
 
 .menubar {
-	width: 300px;
 	background: #dd514c;
 	height: 100%;
+	width: 360px;
 	float: left;
+	position: relative;
 }
 
 #map {
 	height: 100%;
 	position: relative;
+}
+#places {
+	position: absolute;
+	top: 110px;
+	bottom: 0;
+	left: 0;
+	overflow: auto;
+
+	width: 100%;
+}
+.list-group-item {
+	overflow: hidden;
+}
+.list-group-item h4 {
+	font-size: 160%;
+	display: inline-block;
+
+	_white-space: nowrap; /* KI BE KAPCSOLHATÓ! */
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 208px;
+}
+.list-group-item p {
+	color: #BDC3C7;
+	margin: 0;
+	font-size: 90%;
+	display: block;
+	white-space: nowrap;
+	margin-left: 80px;
+}
+.list-group-item-img {
+	border-radius: 25px;
+	float: left;
+	width: 70px;
+	height: 50px;
+	margin-right: 10px;
 }
