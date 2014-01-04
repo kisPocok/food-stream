@@ -1,0 +1,78 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "ef5a9045abccac4cb02832086bda33e7",
+    "packages": [
+        {
+            "name": "thetwelvelabs/foursquare",
+            "version": "v0.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kisPocok/foursquare-php.git",
+                "reference": "8c751a49c834bd600c7d2556d77161b155dc6141"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kisPocok/foursquare-php/zipball/8c751a49c834bd600c7d2556d77161b155dc6141",
+                "reference": "8c751a49c834bd600c7d2556d77161b155dc6141",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "haxx-se/curl": "1.0.0",
+                "kriswallsmith/buzz": "0.7.*",
+                "symfony/http-foundation": "2.2.*"
+            },
+            "suggest": {
+                "kriswallsmith/buzz": "Use Buzz for HTTP Requests",
+                "symfony/http-foundation": "Use Symfony for HTTP Requests and/or Redirects"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "TheTwelve\\Foursquare\\": "lib"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Woodford",
+                    "email": "chris.woodford@gmail.com",
+                    "homepage": "http://ideapatterns.com"
+                }
+            ],
+            "description": "Foursquare API Client",
+            "homepage": "http://thetwelvelabs.com",
+            "keywords": [
+                "foursquare"
+            ],
+            "support": {
+                "source": "https://github.com/kisPocok/foursquare-php/tree/v0.2.2"
+            },
+            "time": "2014-01-04 00:15:53"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ],
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}

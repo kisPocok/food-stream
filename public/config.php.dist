@@ -1,0 +1,9 @@
+<?php
+
+$foodLists = array(
+    'nameOfList' => 'foursquareListId',
+);
+
+define('REDIRECT_URL', 'http://example.com/callback.php');
+define('FSQR_CLIENT_ID', '');
+define('FSQR_CLIENT_SECRET', '');

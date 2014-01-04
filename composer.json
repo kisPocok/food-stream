@@ -1,0 +1,11 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/kisPocok/foursquare-php"
+        }
+    ],
+    "require": {
+		"thetwelvelabs/foursquare": "0.2.*"
+    }
+}

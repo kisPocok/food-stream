@@ -1,0 +1,22 @@
+
+html, body {
+	height: 100%;
+}
+
+.container-full {
+	margin: 0 auto;
+	height: 100%;
+	width: 100%;
+}
+
+.menubar {
+	width: 300px;
+	background: #dd514c;
+	height: 100%;
+	float: left;
+}
+
+#map {
+	height: 100%;
+	position: relative;
+}
