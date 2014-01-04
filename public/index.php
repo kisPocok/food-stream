@@ -6,7 +6,7 @@
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<meta name="apple-mobile-web-app-title" content="<?=$title; ?>">
+	<meta name="apple-mobile-web-app-title" content="TODO_OG_TITLE">
 
 	<meta name="robots" content="index, nofollow" />
 	<meta name="description" content="TODO_OG_DESCRIPTION" />
@@ -32,31 +32,12 @@
 
 <div class="container-full">
 	<div class="menubar">
-		alma
+        <div id="places" class="list-group"></div>
 	</div>
 	<!-- Google map container -->
 	<div id="map">
 		Térkép
 	</div>
-
-	<!--
-	<div class="col-sm-4">
-		<div class="list-group">
-			<a href="#" class="list-group-item active">
-				<h4 class="list-group-item-heading">List group item heading</h4>
-				<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-			</a>
-			<a href="#" class="list-group-item">
-				<h4 class="list-group-item-heading">List group item heading</h4>
-				<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-			</a>
-			<a href="#" class="list-group-item">
-				<h4 class="list-group-item-heading">List group item heading</h4>
-				<p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-			</a>
-		</div>
-	</div>
-	-->
 </div>
 
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBTYqceLuszLWf1_yF9CExEitMtvkZQIzE&sensor=true&language=hu&libraries=geometry"></script>
