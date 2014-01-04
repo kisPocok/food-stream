@@ -65,30 +65,30 @@ class Venue
 	public $tipCount = 0;
 
 	/**
-	 * @var object
+	 * @var string
 	 */
-	private $photo;
+	private $photoUrl;
 
-	/**
-	* @param $item
-	* @return \Venue
-	*/
+    /**
+     * @param $item
+     * @return \App\Foursquare\Venue
+     */
 	public static function create($item)
 	{
 		$venue = new self();
-		$venue->id = $item->id;
-		$venue->name = $item->venue->name;
-		$venue->contactPhone = $item->venue->contact->formattedPhone;
-		$venue->url = $item->venue->url;
-		$venue->likeCount = (int)  $item->venue->likes->count;
-		$venue->specialCount = (int) $item->venue->specials->count;
-		$venue->hereNow = (int) $item->venue->hereNow->count;
+		$venue->id            = $item->id;
+		$venue->name          = $item->venue->name;
+		$venue->contactPhone  = $item->venue->contact->formattedPhone;
+		$venue->url           = $item->venue->url;
+		$venue->likeCount     = (int) $item->venue->likes->count;
+		$venue->specialCount  = (int) $item->venue->specials->count;
+		$venue->hereNow       = (int) $item->venue->hereNow->count;
 		$venue->checkinsCount = (int) $item->venue->stats->checkinsCount;
-		$venue->usersCount = (int) $item->venue->stats->usersCount;
-		$venue->tipCount = (int) $item->venue->stats->tipCount;
-		$venue->photo = $item->photo;
-		$venue->location = $item->venie->location;
-		$venue->categories = (array) $item->venie->categories;
+		$venue->usersCount    = (int) $item->venue->stats->usersCount;
+		$venue->tipCount      = (int) $item->venue->stats->tipCount;
+		$venue->categories    = (array) $item->venue->categories;
+		$venue->location      = $item->venue->location;
+		$venue->photoUrl      = $item->photo->prefix . "/%dx%d/" . $item->photo->suffix;
 		return $venue;
 	}
 
@@ -99,6 +99,6 @@ class Venue
 	 */
 	public function getPhotoUrl($width, $height)
 	{
-		return $this->prefix . "/" . $width . "x" . $height . "/" . $this->suffix;
+		return sprintf($this->photoUrl, (int) $width, (int) $height);
 	}
 }
