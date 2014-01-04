@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ef5a9045abccac4cb02832086bda33e7",
+    "hash": "bfc8aa605e32812df354d1910cd812bf",
     "packages": [
         {
             "name": "thetwelvelabs/foursquare",

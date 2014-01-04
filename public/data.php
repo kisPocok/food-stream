@@ -3,7 +3,7 @@
 session_start();
 date_default_timezone_set('Europe/Budapest');
 include 'config.php';
-include 'Venue.php';
+//include 'Venue.php';
 include '../vendor/autoload.php';
 
 $client = new \TheTwelve\Foursquare\HttpClient\CurlHttpClient('../cacert.pem');
@@ -32,14 +32,14 @@ if (!isset($_SESSION['fsqr_token'])) {
 }
 
 $factory->setToken($token);
-$gateway = $factory->getListGateway();
 
 $venueList = array();
 foreach ($foodLists as $foodType => $foodCategory) {
-	$list = $gateway->getList($foodCategory);
+    $gateway = $factory->getListGateway($foodCategory);
+	$list = $gateway->getList();
 	if (isset($list->listItems) && $list->listItems->count > 0) {
 		foreach ($list->listItems->items as $item) {
-			$venueList[] = Venue::create($item);
+			$venueList[] = \App\Foursquare\Venue::create($item);
 		}
 	}
 }
