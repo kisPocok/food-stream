@@ -3,13 +3,13 @@ Food-Stream
 
 Shows Foursquare lists on the map. 
 
-## Install & Usage
+### Install & Usage
 
     $ cp app/config.php.dist app/config.php
 
 Then, update $foodLists and enter 4qr client and secret IDs in it.
 
-## Missing features
+### Missing features
 
 - keyboard navigation (up/down)
 - sticky selection on list
