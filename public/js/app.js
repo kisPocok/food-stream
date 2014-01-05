@@ -428,7 +428,9 @@ var miakaja = (function(window, $, Q)
         return '<div id="bubble-content">' +
                 '<div class="image-row"><img src="' + venue.screenUrl + '"></div>' +
                 '<div class="content-row">' +
-                    '<h1>' + venue.name.replace(/\./g,'. ') + '</h1>' +
+                    '<h1>' +
+                        '<a href="https://foursquare.com/v/' + venue.id + '" target="_blank">' + venue.name.replace(/\./g,'. ') + '</a>' +
+                    '</h1>' +
                     '<ul>' +
                         '<li class="likes">' +
                             '<span class="label label-danger rating">loading</span>' +
