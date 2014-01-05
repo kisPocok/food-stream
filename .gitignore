@@ -1,4 +1,4 @@
 .idea
 vendor
 composer.phar
-public/config.php
+app/config.php
