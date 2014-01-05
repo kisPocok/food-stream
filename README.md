@@ -6,6 +6,7 @@ Shows Foursquare lists on the map.
 ### Install & Usage
 
     $ cp app/config.php.dist app/config.php
+    $ composer.phar install
 
 Then, update $foodLists and enter 4qr client and secret IDs in it.
 
