@@ -80,7 +80,6 @@ $url         = "http://" . $_SERVER['HTTP_HOST'];
 </div>
 
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBTYqceLuszLWf1_yF9CExEitMtvkZQIzE&sensor=true&language=hu&libraries=geometry"></script>
-<script src="js/google.maps.marker-cluster.js"></script>
 <script src="js/q.min.js"></script>
 <script src="https://code.jquery.com/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
