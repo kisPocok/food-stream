@@ -24,54 +24,249 @@ while (length--) {
 /**
  * Application
  */
-var miakaja = (function(window, $)
+var miakaja = (function(window, $, Q)
 {
-	var self = {};
+	var self = {
+        venues: {}
+    };
+    var map,
+        streetView,
+        hqMarker,
+        markers,
+        disabledCategories = {},
+        alreadyHadNoResult = false,
+        lastVenueLoadingAjax = null,
+        searchElement = $('#search-field');
 
 	self.init = function()
 	{
-		console.log('run');
+        map = initializeMap();
+        streetView = initializeStreetView(map);
+        searchElement.focus();
 
-		map = initializeMap();
-		streetView = initializeStreetView(map);
-        initializePlaces();
+        // HQ
+        hqMarker = marker.create(map, getDefaultLocation(), icons.office(), 'Ustream');
 
-		// ustream
-		marker.create(map, getDefaultLocation(), icons.office(), 'Ustream');
+        Q.fcall(loadMarkers)
+            .then(function(venueLocations)
+            {
+                self.venues = venueLocations[0];
+                markers = placeMarkersOnMap(self.venues);
+                $('#places').find('.list-group-item:not(.not-selectable)').click(function(event) {
+                    var element = $(event.target);
+                    var target = element.is('a.list-group-item') ? element : element.parent('a.list-group-item');
+                    var id = target.data('id');
+                    marker.selfCenterClick(self.venues['v' + id]||self.venues[id]);
+                });
+                searchElement.keyup(search);
+                if (searchElement.val()) {
+                    search();
+                }
+                $('#controll').find('.btn').click(handleCategorySelectorButtons).click(search);
+            })
+            .fail(defaultErrorHandler)
+            .done();
 
 		return self;
 	};
 
-    var initializePlaces = function()
+    var handleCategorySelectorButtons = function(event)
     {
-        $.getJSON('data.php', function(data) {
-            console.log(data);
-            $.each(data, function(i, venue) {
-                $('#places').append(createPlace(venue));
-                marker.create(
-                    map,
-                    new google.maps.LatLng(venue.location.lat, venue.location.lng),
-                    icons.restaurant(),
-                    venue.name
-                );
-            });
+        var target = $(event.target);
+        target.toggleClass('selected');
+        var name = target.data('name');
+        if (target.hasClass('selected')) {
+            disabledCategories[name] = false;
+            $('#places').find('.category-' + name).show();
+        } else {
+            disabledCategories[name] = true;
+            $('#places').find('.category-' + name).hide();
+        }
+
+        checkCategories();
+    };
+
+    var checkCategories = function()
+    {
+        if ($('#controll').find('.selected').length === 0) {
+            $('.select-category').show();
+        } else {
+            $('.select-category').hide();
+        }
+    };
+
+    var search = function()
+    {
+        bubble.close();
+        var q = searchElement.val().toString();
+        $.each(self.venues, function(index, venue) {
+            var data = venue.name + ' ' + venue.location.address;
+            if ((new RegExp(q, 'i').test(data) || q.length <= 0) && isCategoryEnabled(venue.baseCategory)) {
+                venue.listItem.show();
+                venue.marker.setVisible(true);
+            } else {
+                venue.listItem.hide();
+                venue.marker.setVisible(false);
+            }
         });
+
+        var results = $('#places').find('.list-group-item:not(.not-selectable)').filter(':visible');
+        noResultControll(results.length, q.length);
+        if (results.length === 1) {
+            var venueId = results.data('id');
+            var venue = self.venues[('v' + venueId)||venueId];
+            if (venue) {
+                marker.selfCenterClick(venue);
+            }
+        } else {
+            bubble.close();
+        }
+
+        if (q.length === 0) {
+            map.panTo(getDefaultLocation());
+        }
+    };
+
+
+    /**
+     * @param {int} resultLength
+     * @param {int} queryLength
+     */
+    var noResultControll = function(resultLength, queryLength)
+    {
+        var element = $('.no-result');
+        if (queryLength !== 0 && resultLength === 0) {
+            if (alreadyHadNoResult) {
+                element.find('b:hidden').show();
+            }
+            element.show();
+            alreadyHadNoResult = true;
+        } else {
+            element.hide();
+        }
+    };
+
+    /**
+     * @param {string} categoryName
+     * @returns {boolean}
+     */
+    var isCategoryEnabled = function(categoryName)
+    {
+        return !disabledCategories[categoryName];
+    };
+
+    /**
+     * @returns {promise}
+     */
+    var loadMarkers = function()
+    {
+        var def = Q.defer();
+        var params = {
+            method:   'post',
+            dataType: 'json'
+        };
+        $.ajax('data.php', params)
+            .done(function(response) {
+                if (!response.length) {
+                    def.reject();
+                    return;
+                }
+                def.resolve(response);
+            })
+            .fail(function(e) {
+                def.reject(e);
+            });
+        return def.promise;
+    };
+
+    /**
+     * @param {string} venueId
+     * @returns {promise}
+     */
+    var loadVenueDetails = function(venueId)
+    {
+        if (lastVenueLoadingAjax) {
+            lastVenueLoadingAjax.abort();
+        }
+
+        var def = Q.defer();
+        var params = {
+            method:   'post',
+            dataType: 'json',
+            data: {id: venueId}
+        };
+        lastVenueLoadingAjax = $.ajax('venue.php', params)
+            .done(function(response) {
+                if (!response) {
+                    def.reject();
+                    return;
+                }
+                def.resolve(response);
+            })
+            .fail(function(e) {
+                def.reject(e);
+            });
+        return def.promise;
+    };
+
+    /**
+     * @param venues
+     * @returns {Array}
+     */
+    var placeMarkersOnMap = function(venues)
+    {
+        // TODO unused markers var!
+        var markers = [];
+        $.each(venues, function(i, venue) {
+            var listItemHtml = createListItemPlace(venue);
+            $('#places').append(listItemHtml);
+
+            var pos = new google.maps.LatLng(venue.location.lat, venue.location.lng);
+            var icon = getVenueMarkerIconByCategory(venue);
+            var markerItem = marker.create(map, pos, icon, venue.name);
+            google.maps.event.addListener(markerItem, 'click', function() {
+                return marker.selfCenterClick(venue);
+            });
+            venue.marker = markerItem;
+            venue.listItem = listItemHtml;
+            markers.push(markerItem);
+        });
+        return markers;
+    };
+
+    /**
+     * @param venue
+     * @returns {MarkerImage}
+     */
+    var getVenueMarkerIconByCategory = function(venue)
+    {
+        switch (venue.baseCategory) {
+            case 'breakfast':  return icons.breakfast();
+            case 'streetFood': return icons.fastfood();
+            case 'businessLunch': return icons.restaurant();
+            case 'sugarAndKaffeine': return icons.caffeine();
+            default: return icons.pin();
+        }
     };
 
     /**
      * @param venue
      */
-    var createPlace = function(venue)
+    var createListItemPlace = function(venue)
     {
         var guest = venue.hereNow > 0 ? ' <span class="glyphicon glyphicon-user"></span> ' + venue.hereNow : '';
-        var txt = '<a href="#" class="list-group-item">' +
+        var txt = '<a href="javascript:void(0);" class="list-group-item category-' + venue.baseCategory + '" data-id="' + venue.id + '">' +
             '<img src="' + venue.previewUrl + '" class="list-group-item-img" />' +
             '<h4 class="list-group-item-heading">' + venue.name + '</h4>' +
             '<p class="list-group-item-text">' + venue.location.address + guest + '</p>' +
+            '<span class="pipe">' +
+                '<span class="a"></span>' +
+                '<span class="b"></span>' +
+                '<span class="c"></span>' +
+            '</span>' +
         '</a>';
-
         return $(txt);
-    }
+    };
 
 	/**
 	 * @returns {google.maps.Map}
@@ -126,7 +321,7 @@ var miakaja = (function(window, $)
 	};
 
 	/**
-	 * Center of Budapest
+	 * Center of Ustream HQ
 	 *
 	 * @returns {google.maps.LatLng}
 	 */
@@ -155,21 +350,99 @@ var miakaja = (function(window, $)
 	};
 
 	/**
-	 * @param markerItem {google.maps.Marker}
+	 * @param venue
 	 */
-	marker.selfNavigationClick = function(markerItem)
+	marker.selfCenterClick = function(venue)
 	{
-		/*
-		Q.all([
-				user.getLocation(),
-				markerItem.getPosition()
-			])
-			.spread(navigateFromAToB)
-			.then(transformNavigationResponse)
-			.then(populateDestionationView)
-			.done();
-		*/
+
+        Q.fcall(function() {
+            bubble.close();
+            map.panTo(venue.marker.getPosition());
+            bubble.open(venue);
+        })
+        .then(function() {
+            return venue.id;
+        })
+        .then(loadVenueDetails)
+        .then(bubble.update)
+        .fail(defaultErrorHandler)
+        .done();
 	};
+
+    var bubble = {
+        infoWindow: null
+    };
+
+    /**
+     * @param venue
+     */
+    bubble.open = function(venue)
+    {
+        bubble.close();
+        bubble.infoWindow = new google.maps.InfoWindow({
+            content: getInfoWindowContent(venue)
+        });
+        bubble.infoWindow.open(map, venue.marker);
+    };
+
+    bubble.close = function()
+    {
+        if (bubble.infoWindow) {
+            bubble.infoWindow.close();
+        }
+    };
+
+    /**
+     * @param venueDetailed
+     */
+    bubble.update = function(venueDetailed)
+    {
+        var container = $('#bubble-content');
+        container.find('.rating').html('<span class="glyphicon glyphicon-star"></span> ' + venueDetailed.rating);
+
+        var openMarker = venueDetailed.isOpen ? 'glyphicon-ok' : 'glyphicon-remove';
+        container.find('.content-row .status').html(
+            '<span class="glyphicon ' + openMarker + '"></span>' + (venueDetailed.openingStatus||'no information available')
+        );
+
+        if (venueDetailed.wifi) {
+            container.find('.likes').append('<span class="glyphicon glyphicon-signal" title="Wi-Fi available"></span>');
+        }
+        if (venueDetailed.creditCard) {
+            container.find('.likes').append('<span class="glyphicon glyphicon-credit-card" title="You can pay with Credit Card"></span>');
+        }
+        if (venueDetailed.outdoor) {
+            container.find('.likes').append('<span class="glyphicon glyphicon-tree-conifer" title="Outdoor seating available"></span>');
+        }
+    };
+
+    /**
+     * @param venue
+     * @returns {string}
+     */
+    var getInfoWindowContent = function(venue)
+    {
+        var phone = venue.contactPhone ? '<a href="tel:' + venue.contactPhone + '">' + (venue.formattedPhone||venue.contactPhone) + '</a>' : '-';
+        var location = '<span style="display: none;">' + (venue.location.postalCode||'') + ' ' + (venue.location.city||'') + ', </span>' + venue.location.address;
+
+        return '<div id="bubble-content">' +
+                '<div class="image-row"><img src="' + venue.screenUrl + '"></div>' +
+                '<div class="content-row">' +
+                    '<h1>' + venue.name.replace(/\./g,'. ') + '</h1>' +
+                    '<ul>' +
+                        '<li class="likes">' +
+                            '<span class="label label-danger rating">loading</span>' +
+                            '<span class="glyphicon glyphicon-heart"></span>' + venue.likeCount +
+                            '<span class="glyphicon glyphicon-user"></span>' + venue.hereNow +
+                        '</li>' +
+                        '<li class="hereNow"></li>' +
+                        '<li class="location"><span class="glyphicon glyphicon-home"></span>' + location + '</li>' +
+                        '<li class="phone"><span class="glyphicon glyphicon-phone-alt"></span>' + phone + '</li>' +
+                        '<li class="status">&nbsp;</li>' +
+                    '</ul>' +
+                '</div>' +
+            '</div>';
+    };
 
 	var icons = {};
 
@@ -186,22 +459,86 @@ var miakaja = (function(window, $)
 		);
 	};
 
-	/**
-	 * @returns {google.maps.MarkerImage}
-	 */
-	icons.restaurant = function()
-	{
-		return new google.maps.MarkerImage(
-			'img/icons/glyphicons_276_cutlery.png',
-			new google.maps.Size(16, 24), // (width,height)
-			new google.maps.Point(0, 0),  // The origin point (x,y)
-			new google.maps.Point(8, 24) // The anchor point (x,y)
-		);
-	};
+    /**
+     * @returns {google.maps.MarkerImage}
+     */
+    icons.restaurant = function()
+    {
+        return new google.maps.MarkerImage(
+            'img/icons/glyphicons_276_cutlery.png',
+            new google.maps.Size(16, 24), // (width,height)
+            new google.maps.Point(0, 0),  // The origin point (x,y)
+            new google.maps.Point(8, 24) // The anchor point (x,y)
+        );
+    };
 
+    /**
+     * @returns {google.maps.MarkerImage}
+     */
+    icons.caffeine = function()
+    {
+        return new google.maps.MarkerImage(
+            'img/icons/glyphicons_294_coffe_cup.png',
+            new google.maps.Size(25, 19), // (width,height)
+            new google.maps.Point(0, 0),  // The origin point (x,y)
+            new google.maps.Point(12, 10) // The anchor point (x,y)
+        );
+    };
+
+    /**
+     * @returns {google.maps.MarkerImage}
+     */
+    icons.fastfood = function()
+    {
+        return new google.maps.MarkerImage(
+            'img/icons/glyphicons_275_fast_food.png',
+            new google.maps.Size(28, 24), // (width,height)
+            new google.maps.Point(0, 0),  // The origin point (x,y)
+            new google.maps.Point(14, 12) // The anchor point (x,y)
+        );
+    };
+
+    /**
+     * @returns {google.maps.MarkerImage}
+     */
+    icons.breakfast = function()
+    {
+        return new google.maps.MarkerImage(
+            'img/icons/glyphicons_292_tea_kettle.png',
+            new google.maps.Size(26, 23), // (width,height)
+            new google.maps.Point(0, 0),  // The origin point (x,y)
+            new google.maps.Point(13, 12) // The anchor point (x,y)
+        );
+    };
+
+    /**
+     * @returns {google.maps.MarkerImage}
+     */
+    icons.pin = function()
+    {
+        return new google.maps.MarkerImage(
+            'img/icons/glyphicons_242_google_maps.png',
+            new google.maps.Size(16, 24), // (width,height)
+            new google.maps.Point(0, 0),  // The origin point (x,y)
+            new google.maps.Point(8, 0) // The anchor point (x,y)
+        );
+    };
+
+    /**
+     * @param error
+     */
+    var defaultErrorHandler = function(error)
+    {
+        if (console && console.error) {
+            console.error(error.stack);
+        }
+    };
+
+    self.d = disabledCategories;
 	return self;
-}(window, jQuery));
+}(window, jQuery, Q));
 
+var app = {};
 /**
  * - All batteries concentrate forward firepower.
  * - Spin up drives two and six!
@@ -210,5 +547,5 @@ var miakaja = (function(window, $)
  * - Mark!
  */
 jQuery(function() {
-	var app = miakaja.init();
+	app = miakaja.init();
 });

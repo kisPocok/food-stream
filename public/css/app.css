@@ -1,8 +1,6 @@
-
 html, body {
 	height: 100%;
 }
-
 .container-full {
 	margin: 0 auto;
 	height: 100%;
@@ -10,50 +8,193 @@ html, body {
 }
 
 .menubar {
-	background: #dd514c;
+	background: #36a9e1;
 	height: 100%;
 	width: 360px;
 	float: left;
 	position: relative;
 }
-
+.menubar .page-header {
+	margin: 0;
+}
+.menubar .page-header h1 {
+	color: #fff;
+	text-align: center;
+	font-weight: 300;
+}
+#controll {
+	margin: 6px 0 0 16px;
+}
+#controll .btn {
+	opacity: 0.5;
+	border: 0 none;
+	margin-right: 1px;
+}
+#controll .btn.selected {
+	opacity: 1;
+}
+#places {
+	position: absolute;
+	top: 124px;
+	bottom: 0;
+	left: 0;
+	overflow: auto;
+	margin-bottom: 5px;
+	width: 100%;
+}
+#places .no-result span,
+#places .select-category span {
+	color: #8fcfee;
+	font-size: 30px;
+	float: left;
+	margin: 4px 10px 0 10px;
+}
+#places .list-group-item {
+	border-radius: 0;
+	border: 0 none;
+	background: #36a9e1;
+	font-weight: 100;
+	overflow: hidden;
+}
+#places .list-group-item:hover {
+	background: #219fdd;
+}
+#places .list-group-item h4 {
+	color: #fff;
+	font-size: 180%;
+	display: inline-block;
+	line-height: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 235px;
+	font-weight: 100;
+	margin-bottom: 0;
+	letter-spacing: 0.5px;
+}
+#places .list-group-item p {
+	color: #8fcfee;
+	margin: 0;
+	display: block;
+	white-space: nowrap;
+	font-weight: 200;
+	letter-spacing: 0.2px;
+}
+#places .list-group-item p .glyphicon {
+	margin-left: 6px;
+}
+#places .list-group-item-img {
+	border-radius: 32px;
+	border: 3px solid #fff;
+	float: left;
+	width: 50px;
+	height: 50px;
+	margin-right: 10px;
+}
 #map {
 	height: 100%;
 	position: relative;
 }
-#places {
-	position: absolute;
-	top: 110px;
-	bottom: 0;
-	left: 0;
-	overflow: auto;
-
-	width: 100%;
-}
-.list-group-item {
-	overflow: hidden;
-}
-.list-group-item h4 {
-	font-size: 160%;
-	display: inline-block;
-
-	_white-space: nowrap; /* KI BE KAPCSOLHATÓ! */
-	text-overflow: ellipsis;
-	overflow: hidden;
-	max-width: 208px;
-}
-.list-group-item p {
-	color: #BDC3C7;
-	margin: 0;
-	font-size: 90%;
+.pipe {
 	display: block;
-	white-space: nowrap;
-	margin-left: 80px;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
 }
-.list-group-item-img {
-	border-radius: 25px;
-	float: left;
-	width: 70px;
-	height: 50px;
-	margin-right: 10px;
+.pipe > span {
+	position: absolute;
+	right: 0;
+	display: block;
+	height: 24px;
+	width: 3px;
+}
+.pipe > .a {
+	top: 0;
+	transition: width 0.2s ease;
+}
+.pipe > .b {
+	top: 24px;
+	transition: width 0.2s ease 0.1s;
+}
+.pipe > .c {
+	top: 48px;
+	transition: width 0.2s ease 0.2s;
+}
+
+.list-group-item:hover .pipe > span {
+	width: 12px;
+}
+.category-breakfast .pipe > span {
+	background: #ff5454;
+}
+.category-streetFood .pipe > span {
+	background: #fabb3d;
+}
+.category-businessLunch .pipe > span {
+	background: #78cd51;
+}
+.category-sugarAndKaffeine .pipe > span {
+	background: #825a2c;
+}
+
+.btn-caffeine,
+.btn-caffeine:focus,
+.btn-caffeine:active {
+	background-color: #87794e;
+	color: #fff;
+}
+.btn-caffeine:hover {
+	background-color: #825a2c;
+	color: #fff;
+}
+
+#bubble-content {
+	overflow: hidden;
+	width: 420px;
+}
+#bubble-content h1 {
+	margin-top: 10px;
+}
+#bubble-content ul {
+	padding-left: 0;
+}
+#bubble-content li {
+	list-style: none;
+	line-height: 20px;
+}
+#bubble-content .image-row {
+	float:left;
+}
+#bubble-content .image-row img {
+	margin: 10px 10px 10px 0;
+	border-radius: 3px;
+}
+#bubble-content .content-row {
+	margin-left: 175px;
+}
+#bubble-content .glyphicon {
+	font-family: 'Glyphicons Halflings' !important;
+	margin-right: 4px;
+}
+#bubble-content .likes .glyphicon {
+	margin-left: 6px;
+}
+#bubble-content .likes .glyphicon-star,
+#bubble-content .likes .glyphicon-heart {
+	margin-left: 0;
+}
+#bubble-content .likes {
+	line-height: 25px;
+	padding-bottom: 5px;
+}
+#bubble-content .rating {
+	margin-right: 6px;
+}
+#bubble-content .rating > span {
+	margin-right: 0;
+}
+#bubble-content li.location:hover span {
+	display: inline !important;
 }

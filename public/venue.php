@@ -1,7 +1,6 @@
 <?php
 
 use App\Foursquare\Venue;
-use App\Foursquare\VenueOrdering;
 
 header('Content-Type: application/json');
 date_default_timezone_set('Europe/Budapest');
@@ -16,17 +15,18 @@ $factory = new \TheTwelve\Foursquare\ApiGatewayFactory($client, $redirector);
 $factory->setClientCredentials(FSQR_CLIENT_ID, FSQR_CLIENT_SECRET);
 $factory->setEndpointUri('https://api.foursquare.com');
 $factory->useVersion(2);
+$auth = $factory->getAuthenticationGateway(
+    'https://foursquare.com/oauth2/authorize',
+    'https://foursquare.com/oauth2/access_token',
+    REDIRECT_URL
+);
 
-$venueList = array();
-foreach ($foodLists as $foodType => $foodCategory) {
-    $gateway = $factory->getListGateway($foodCategory);
-	$list = $gateway->getList();
-	if (isset($list->listItems) && $list->listItems->count > 0) {
-		foreach ($list->listItems->items as $item) {
-			$v = Venue::createFromList($item, $foodType);
-            $venueList[$item->id] = $v;
-		}
-	}
+$venueId = $_POST['id'];
+$gateway = $factory->getVenuesGateway();
+try {
+    $venueData = $gateway->getVenue($venueId);
+    $venue = Venue::createDetailed($venueData);
+    echo json_encode($venue);
+} catch (Exception $e) {
+    exit("");
 }
-uasort($venueList, VenueOrdering::create()->ordering());
-echo "[" . json_encode($venueList) . "]";
