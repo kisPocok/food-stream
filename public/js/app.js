@@ -422,6 +422,7 @@ var miakaja = (function (window, $, Q) {
 	};
 
 	bubble.close = function () {
+		directionsRenderer.setMap(null);
 		if (bubble.infoWindow) {
 			bubble.infoWindow.close();
 		}
