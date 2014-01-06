@@ -38,16 +38,30 @@ $url         = "http://" . $_SERVER['HTTP_HOST'];
 <body>
 
 <div class="container-full">
+	<div class="menu-opener">
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+	</div>
 	<div class="menubar">
         <div class="page-header">
             <h1><?=$title; ?></h1>
         </div>
-        <div id="controll" class="btn-group">
+        <div id="controll" class="btn-group clearfix">
             <button class="btn btn-danger selected" data-name="breakfast">breakfast</button>
             <button class="btn btn-warning selected" data-name="streetFood">streetfood</button>
             <button class="btn btn-success selected" data-name="businessLunch">business</button>
             <button class="btn btn-caffeine selected" data-name="sugarAndKaffeine">caffeine</button>
         </div>
+		<div id="search" class="input-group">
+			<input id="search-field" type="text" class="form-control" placeholder="Where do you want to eat?">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+		</div>
         <div id="places" class="list-group">
             <a href="#" class="list-group-item not-selectable select-category" style="display: none;">
                 <span class="glyphicon glyphicon-arrow-up"></span>
@@ -55,16 +69,6 @@ $url         = "http://" . $_SERVER['HTTP_HOST'];
                     Please, select least 1 category asap.<br />
                     Someone is waiting for food.
                 </p>
-            </a>
-            <a href="#" class="list-group-item not-selectable">
-                <div class="input-group">
-                    <input id="search-field" type="text" class="form-control" placeholder="Where do you want to eat?">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">
-                            <span class="glyphicon glyphicon-search"></span>
-                        </button>
-                    </span>
-                </div>
             </a>
             <a href="#" class="list-group-item not-selectable no-result" style="display: none;">
                 <span class="glyphicon glyphicon-arrow-up"></span>
@@ -76,12 +80,12 @@ $url         = "http://" . $_SERVER['HTTP_HOST'];
         </div>
 	</div>
 	<!-- Google map container -->
-	<div id="map">Loading map..</div>
+	<div id="map"><span class="loading">Loading map...</span></div>
 </div>
 
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBTYqceLuszLWf1_yF9CExEitMtvkZQIzE&sensor=true&language=hu&libraries=geometry"></script>
 <script src="js/q.min.js"></script>
-<script src="https://code.jquery.com/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/app.js?v=1"></script>
 <script>

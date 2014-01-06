@@ -46,6 +46,11 @@ var miakaja = (function (window, $, Q) {
 		searchElement.focus();
 		directionsRenderer = initializeDirectionsRenderer();
 
+		//Mobile menu opener
+		$('.menu-opener').on('click', function () {
+			toggleMenuBar();
+		});
+
 		// HQ
 		hqMarker = marker.create(map, getDefaultLocation(), icons.office(), 'Ustream');
 
@@ -58,6 +63,7 @@ var miakaja = (function (window, $, Q) {
 					var target = element.is('a.list-group-item') ? element : element.parent('a.list-group-item');
 					var id = target.data('id');
 					marker.selfCenterClick(self.venues['v' + id] || self.venues[id]);
+					toggleMenuBar();
 				});
 				searchElement.keyup(search);
 				if (searchElement.val()) {
@@ -92,6 +98,15 @@ var miakaja = (function (window, $, Q) {
 		} else {
 			$('.select-category').hide();
 		}
+	};
+
+	/**
+	 * Toggles menu bar on mobile layout
+	 */
+	var toggleMenuBar = function () {
+		if (!isMobileLayout) return;
+
+		$('.menu-opener, .menubar').toggleClass('opened');
 	};
 
 	var search = function () {
@@ -326,7 +341,8 @@ var miakaja = (function (window, $, Q) {
 			panControl: false,
 			zoomControl: true,
 			zoomControlOptions: {
-				position: google.maps.ControlPosition.LEFT_TOP,
+				position: isMobileLayout ?
+					google.maps.ControlPosition.RIGHT_TOP : google.maps.ControlPosition.LEFT_TOP,
 				style: google.maps.ZoomControlStyle.SMALL
 			},
 			styles: styleParams
@@ -337,7 +353,8 @@ var miakaja = (function (window, $, Q) {
 
 	var initializeDirectionsRenderer = function () {
 		return new google.maps.DirectionsRenderer({
-			preserveViewport: true
+			preserveViewport: true,
+			suppressMarkers: true
 		});
 	};
 
@@ -361,6 +378,10 @@ var miakaja = (function (window, $, Q) {
 	 */
 	var getDefaultLocation = function () {
 		return new google.maps.LatLng(47.503739, 19.061415);
+	};
+
+	var isMobileLayout = function () {
+		return window.innerWidth < 800;
 	};
 
 	var marker = {};
