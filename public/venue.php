@@ -15,11 +15,6 @@ $factory = new \TheTwelve\Foursquare\ApiGatewayFactory($client, $redirector);
 $factory->setClientCredentials(FSQR_CLIENT_ID, FSQR_CLIENT_SECRET);
 $factory->setEndpointUri('https://api.foursquare.com');
 $factory->useVersion(2);
-$auth = $factory->getAuthenticationGateway(
-    'https://foursquare.com/oauth2/authorize',
-    'https://foursquare.com/oauth2/access_token',
-    REDIRECT_URL
-);
 
 $venueId = $_POST['id'];
 $gateway = $factory->getVenuesGateway();
