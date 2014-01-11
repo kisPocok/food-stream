@@ -187,8 +187,10 @@ html, body {
 	width: 420px;
 }
 
-#bubble-content h1 {
+#bubble-content h1 a {
 	margin-top: 10px;
+	font-size: 36px;
+	font-weight: 500;
 }
 
 #bubble-content ul {

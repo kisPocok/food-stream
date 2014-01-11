@@ -490,7 +490,9 @@ var miakaja = (function (window, $, Q) {
 				'<div class="distance"><i class="loader"></i>loading</div>' +
 			'</div>' +
 			'<div class="content-row">' +
-			'<h1>' + venue.name.replace(/\./g, '. ') + '</h1>' +
+			'<h1>' +
+                '<a href="https://foursquare.com/v/' + venue.id + '" target="_blank">' + venue.name.replace(/\./g,'. ') + '</a>' +
+            '</h1>' +
 			'<ul>' +
 				'<li class="likes">' +
 				'<span class="label label-danger rating"><i class="loader"></i>loading</span>' +
