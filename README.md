@@ -12,6 +12,7 @@ Then, update $foodLists and enter 4qr client and secret IDs in it.
 
 ### Missing features
 
+- category selection isn't user friendly
 - keyboard navigation on the list (up/down)
 - show active list image on venue select
 - missing apple-touch-icons & favicon
